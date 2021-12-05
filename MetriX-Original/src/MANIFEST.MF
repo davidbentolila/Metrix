@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Xms: 512m 
+Xmx: 2048m
+XX: +UseGCOverheadLimit
+XX: +AggressiveHeap
+XX: +AggressiveOpts
+XX: -UseParallelGC
+XX: -UseSerialGC
+XX: MaxPermSize=512m

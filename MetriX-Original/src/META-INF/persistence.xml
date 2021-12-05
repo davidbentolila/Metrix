@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="metrixPU" transaction-type="RESOURCE_LOCAL">
+		<class>br.ufpa.linc.MetriX.api.model.API</class>
+		<class>br.ufpa.linc.MetriX.api.model.Attribute</class>
+		<class>br.ufpa.linc.MetriX.api.model.Class</class>
+		<class>br.ufpa.linc.MetriX.api.model.Interface</class>
+		<class>br.ufpa.linc.MetriX.api.model.Method</class>
+		<class>br.ufpa.linc.MetriX.api.model.MetricsValues</class>
+		<class>br.ufpa.linc.MetriX.api.model.Package</class>
+		<class>br.ufpa.linc.MetriX.api.model.Primitive</class>
+		<properties>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/metrix"/>
+			<property name="javax.persistence.jdbc.user" value="metrix"/>
+			<property name="javax.persistence.jdbc.password" value="metrix"/>
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+			<property name="eclipselink.logging.level" value="ALL"/>
+			<property name="eclipselink.ddl-generation" value="create-tables"/>
+		</properties>
+	</persistence-unit>
+</persistence>

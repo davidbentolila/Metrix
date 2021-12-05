@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Tue Feb 05 13:45:45 BRST 2013
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=C\:\\Users\\David\\Downloads\\Metrix.jar
+manifest.mergeall=true
+manifest.mainclass=br.ufpa.linc.MetriX.MetriX
+manifest.file=<createnew>
+jarname.isextern=true
+onejar.expand=
+excludes=
+includes=

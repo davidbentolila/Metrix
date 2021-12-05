@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<useCases api="jfreechart">
+	<useCase name="ler XML">
+		<method name="br.ufpa.pacote1.Classe1.method1"/>
+		<method name="br.ufpa.pacote1.Classe2.method2"/>
+		<class name="org.jfree.data.Value"/>
+		<class name="br.ufpa.pacote1.Classe2"/>
+		<package name="br.ufpa.pacote2"/>
+		<package name="br.ufpa.pacote3"/>
+	</useCase>
+</useCases>

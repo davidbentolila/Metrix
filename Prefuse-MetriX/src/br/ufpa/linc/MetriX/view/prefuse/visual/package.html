@@ -1,0 +1,15 @@
+<body>
+<p>Classes for representing and storing VisualItems. In addition to the top
+level {@link br.ufpa.linc.MetriX.view.prefuse.visual.VisualItem} interface, 
+{@link br.ufpa.linc.MetriX.view.prefuse.visual.NodeItem} and {@link br.ufpa.linc.MetrX.view.prefuse.visual.EdgeItem} provide
+access to an underlying graph structure, {@link br.ufpa.linc.MetrX.view.prefuse.visual.DecoratorItem}
+represents a VisualItem "attached to" or "decorating" another VisualItem,
+and {@link br.ufpa.linc.MetriX.view.prefuse.visual.AggregateItem} represents an aggregated collection
+of VisualItems.</p>
+
+<p>VisualItems descend from the {@link br.ufpa.linc.MetriX.view.prefuse.data.Tuple} interface, and
+as such are actually object proxies for a row of a data table. This package
+includes the corresponding table and graph implementations, which have been tuned
+to the needs of the visual abstraction. More implementational machinery for 
+these types is in the {@link br.ufpa.linc.MetriX.view.prefuse.visual.tuple} package.</p>
+</body>
