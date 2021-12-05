@@ -72,61 +72,68 @@ public class CsvReader {
 
 		t1 = new Thread(){
 			public void run() {
-				API a = new API();
-				Map<String,Package>packages = new HashMap<String,Package>();
-				Map<String,Entity>entities = new HashMap<String,Entity>();
-				a.setNome( fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator"))+1) );
-				a.setMetricsValues(new MetricsValues());
-				//Criando um default package
-				Package defaultPackage = null;
-				if(packageCollumn == COLLUMN_NONE){
-					defaultPackage = new Package("default", a);
-					defaultPackage.setMetricsValues(new MetricsValues());
-					a.addPackage(defaultPackage);
-				}
-				
-				int count = 0;
-				
-				switch(lower){
-				case 1:
-					for (int i = 0; i < csv.getNumLines()-1; i++) {
-						List<Field> line = csv.getLine(i);
-						String cname = line.get(entityCollumn).getValueS();
-						Package currentPackage;
-						if((packageCollumn != COLLUMN_NONE)){
-							String s = line.get(packageCollumn).getValueS();
-							if(!entities.containsKey(s) ){
-								currentPackage = new Package(s, a);
-								currentPackage.setMetricsValues(new MetricsValues());
-								a.addPackage(defaultPackage);
-								packages.put(s, currentPackage);
-							}
-							else currentPackage =  packages.get(s);
-						}
-						else {
-							currentPackage = defaultPackage;
-						}
-						MetriX.getInstance().getStatus().updateProgressBar( currentPackage.getName() );
-						Entity actualEntity = new Class(cname,currentPackage);
-						currentPackage.addEntity(actualEntity);
-						actualEntity.setMetricsValues(new MetricsValues());
-						for (Entry<Metric, Integer> entry : getMetricsCollumns().entrySet()) {
-							Metric metric  = entry.getKey();
-							double value = entry.getValue();
-							metric.setValue(actualEntity, value);
-							System.out.println(actualEntity.getName()+", "+metric.getLabel()+", "+value);
-							metric.setValue(currentPackage, value + metric.getValue(currentPackage));
-						}
-						count ++;
-						if(count == max) break;
+				boolean ok = false;
+				try {
+					API a = new API();
+					Map<String,Package>packages = new HashMap<String,Package>();
+					Map<String,Entity>entities = new HashMap<String,Entity>();
+					a.setNome( fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator"))+1) );
+					a.setMetricsValues(new MetricsValues());
+					//Criando um default package
+					Package defaultPackage = null;
+					if(packageCollumn == COLLUMN_NONE){
+						defaultPackage = new Package("default", a);
+						defaultPackage.setMetricsValues(new MetricsValues());
+						a.addPackage(defaultPackage);
 					}
-					break;
 					
+					int count = 0;
+					
+					switch(lower){
+					case 1:
+						for (int i = 0; i < csv.getNumLines()-1; i++) {
+							List<Field> line = csv.getLine(i);
+							String cname = line.get(entityCollumn).getValueS();
+							Package currentPackage;
+							if((packageCollumn != COLLUMN_NONE)){
+								String s = line.get(packageCollumn).getValueS();
+								if(!entities.containsKey(s) ){
+									currentPackage = new Package(s, a);
+									currentPackage.setMetricsValues(new MetricsValues());
+									a.addPackage(defaultPackage);
+									packages.put(s, currentPackage);
+								}
+								else currentPackage =  packages.get(s);
+							}
+							else {
+								currentPackage = defaultPackage;
+							}
+							MetriX.getInstance().getStatus().updateProgressBar( currentPackage.getName() );
+							Entity actualEntity = new Class(cname,currentPackage);
+							currentPackage.addEntity(actualEntity);
+							actualEntity.setMetricsValues(new MetricsValues());
+							for (Entry<Metric, Integer> entry : getMetricsCollumns().entrySet()) {
+								Metric metric  = entry.getKey();
+								double value = entry.getValue();
+								metric.setValue(actualEntity, value);
+								System.out.println(actualEntity.getName()+", "+metric.getLabel()+", "+value);
+								metric.setValue(currentPackage, value + metric.getValue(currentPackage));
+							}
+							count ++;
+							if(count == max) break;
+						}
+						break;
+						
+					}
+					
+					System.out.println("Linhas inseridas: "+ (count));
+					
+					ok = Database.getInstance().insert(a);					
+				}catch (Exception e) {
+					ok = false;
+					e.printStackTrace();
 				}
 				
-				System.out.println("Linhas inseridas: "+ (count));
-				
-				boolean ok = Database.getInstance().insert(a);
 				MetriX.getInstance().getStatus().dispose();
 				
 				if ( ok ) JOptionPane.showMessageDialog(null, Configurations.getString("message.dao.inserted"));

@@ -1,6 +1,7 @@
 package br.ufpa.linc.MetriX.experiment;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import br.ufpa.linc.MetriX.api.model.API;
@@ -15,7 +16,7 @@ import br.ufpa.linc.configuration.Files;
  */
 public class CalculateCK {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		File root = new File("/home/david/Documentos/UFPA/teste/u ima-core_2.2.2/");
 		
 		List<File> classes = Files.listClasses(root);

@@ -1,5 +1,7 @@
 package br.ufpa.linc.MetriX.metrics;
 
+import java.io.IOException;
+
 import br.ufpa.linc.MetriX.MetriX;
 import br.ufpa.linc.MetriX.api.model.API;
 import br.ufpa.linc.MetriX.api.model.Entity;
@@ -14,21 +16,21 @@ import br.ufpa.linc.bentolila.metricasprogramasalheios.CKMetrics;
  */
 public class DepthOfInheritanceTree extends Metric{
 
-	public Double getValue(API api) {
+	public Double getValue(API api) throws IOException {
 		double dit = api.getMetricsValues().getDIT();
 		if ( dit == 0 )
 			for (Package p : api.getPackages()) dit += getValue(p);
 		return dit;
 	}
 
-	public Double getValue(Package p) {
+	public Double getValue(Package p) throws IOException {
 		double dit = p.getMetricsValues().getDIT();
 		if ( dit == 0 )
 			for ( Entity e : p.getEntities() ) dit += getValue(e);
 		return dit;
 	}
 
-	public Double getValue(Entity e) {
+	public Double getValue(Entity e) throws IOException {
 		double dit = e.getMetricsValues().getDIT();
 		if ( dit == 0 ){
 			if ( MetriX.tempDir == null ) return 1d;

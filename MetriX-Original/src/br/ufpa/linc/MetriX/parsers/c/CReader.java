@@ -109,51 +109,58 @@ public class CReader implements Reader{
 		
 		Thread t1 = new Thread(){
 			public void run() {
-				System.out.println(Configurations.getString("analysis.start"));
-				int total  = files.size();
-				for (Parser file : files){
-					Package p = new Package(file.getFileName(), api);
-//					api.addPackage(p);
-					//Interface i =  new Interface("<NO CLASS>", p);
-					Interface i =  new Interface(file.getFileName(), p);
-					file.parse();
-					p.addEntity(i);
-					Set<Function> functions = file.getFunctions();
-					for (Function function : functions) {
-						insertFunction(function, i);
-					}
-				}
-				
-				MetriX.getInstance().getStatus().updateProgressBar(Configurations.getString("message.calculatingMetrics"));
-				System.out.println(Configurations.getString("message.calculatingMetrics"));
-				
-
-				/*
-				 * Calculate all metrics
-				 */
-				for (MetricModel mm : MetriX.getInstance().getMetricModelsAvailable()){
-					for (Metric m_ : mm.getMetrics()){
-						for (Package p : api.getPackages()){
-//							main.getStatus().restart(api.getAllEntities().size());
-							for (Entity e : p.getEntities()){
-								MetriX.getInstance().getStatus().updateProgressBar(Configurations.getString("message.calculatingMetric")+" "+m_.getLabel()+": "+e.getPackage().getName() + "." + e.getName());
-								for (Method m : e.getMethods()) 
-									m_.setValue(m, m_.getValue(m) );
-								m_.setValue(e, m_.getValue(e) );
-							}
-							m_.setValue(p, m_.getValue(p) );
+				boolean ok = false;
+				try {
+					System.out.println(Configurations.getString("analysis.start"));
+					int total  = files.size();
+					for (Parser file : files){
+						Package p = new Package(file.getFileName(), api);
+//						api.addPackage(p);
+						//Interface i =  new Interface("<NO CLASS>", p);
+						Interface i =  new Interface(file.getFileName(), p);
+						file.parse();
+						p.addEntity(i);
+						Set<Function> functions = file.getFunctions();
+						for (Function function : functions) {
+							insertFunction(function, i);
 						}
-					m_.setValue(api, m_.getValue(api) );
 					}
+					
+					MetriX.getInstance().getStatus().updateProgressBar(Configurations.getString("message.calculatingMetrics"));
+					System.out.println(Configurations.getString("message.calculatingMetrics"));
+					
+
+					/*
+					 * Calculate all metrics
+					 */
+					for (MetricModel mm : MetriX.getInstance().getMetricModelsAvailable()){
+						for (Metric m_ : mm.getMetrics()){
+							for (Package p : api.getPackages()){
+//								main.getStatus().restart(api.getAllEntities().size());
+								for (Entity e : p.getEntities()){
+									MetriX.getInstance().getStatus().updateProgressBar(Configurations.getString("message.calculatingMetric")+" "+m_.getLabel()+": "+e.getPackage().getName() + "." + e.getName());
+									for (Method m : e.getMethods()) 
+										m_.setValue(m, m_.getValue(m) );
+									m_.setValue(e, m_.getValue(e) );
+								}
+								m_.setValue(p, m_.getValue(p) );
+							}
+						m_.setValue(api, m_.getValue(api) );
+						}
+					}
+
+					MetriX.getInstance().getStatus().updateProgressBar(Configurations.getString("message.dao.inserting"));
+					
+					System.out.println(api );
+
+					System.out.println("total: " + total + " Classes analisadas");
+					ok = Database.getInstance().insert(api);
+	
+				}catch (Exception e) {
+					ok = false;
+					e.printStackTrace();
 				}
-
-				MetriX.getInstance().getStatus().updateProgressBar(Configurations.getString("message.dao.inserting"));
-				
-				System.out.println(api );
-
-				System.out.println("total: " + total + " Classes analisadas");
-				boolean ok = Database.getInstance().insert(api);
-				
+								
 				MetriX.getInstance().getStatus().dispose();
 				if ( ok ) JOptionPane.showMessageDialog(null, Configurations.getString("message.dao.inserted"));
 				else JOptionPane.showMessageDialog(null, Configurations.getString("message.dao.errorinsert"));

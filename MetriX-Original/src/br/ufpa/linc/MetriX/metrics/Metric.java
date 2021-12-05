@@ -1,5 +1,7 @@
 package br.ufpa.linc.MetriX.metrics;
 
+import java.io.IOException;
+
 import br.ufpa.linc.MetriX.api.model.API;
 import br.ufpa.linc.MetriX.api.model.Entity;
 import br.ufpa.linc.MetriX.api.model.Method;
@@ -7,11 +9,11 @@ import br.ufpa.linc.MetriX.api.model.Package;
 
 public abstract class Metric {
 
-	public abstract Double getValue(API api);
+	public abstract Double getValue(API api) throws IOException;
 	
-	public abstract Double getValue(Package p);
+	public abstract Double getValue(Package p) throws IOException;
 	
-	public abstract Double getValue(Entity e);
+	public abstract Double getValue(Entity e) throws IOException;
 	
 	public abstract Double getValue(Method m);
 	

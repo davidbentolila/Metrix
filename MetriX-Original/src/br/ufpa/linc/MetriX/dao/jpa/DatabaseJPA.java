@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import sun.audio.AudioDevice;
 import br.ufpa.linc.MetriX.api.model.API;
 import br.ufpa.linc.MetriX.api.model.Attribute;
 import br.ufpa.linc.MetriX.api.model.Class;
@@ -53,7 +52,7 @@ public class DatabaseJPA implements DatabaseStrategy {
 			ok = false;
 			Logger.getLogger(getClass().getName()).log(Level.ALL, "exception caught", e);
 //			em.getTransaction().rollback();
-			AudioDevice.device.openChannel( getClass().getResourceAsStream("/sounds/error.wav"));
+			/////////////////////////////AudioDevice.device.openChannel( getClass().getResourceAsStream("/sounds/error.wav"));
 		}
 		return ok;
 	}
@@ -77,7 +76,7 @@ public class DatabaseJPA implements DatabaseStrategy {
 			ok = false;
 			Logger.getLogger(getClass().getName()).log(Level.ALL,"exception caught", e);
 			em.getTransaction().rollback();
-			AudioDevice.device.openChannel( getClass().getResourceAsStream("/sounds/error.wav"));
+			Configurations.playErrorSound();
 		}
 		return ok;
 	}
@@ -95,7 +94,7 @@ public class DatabaseJPA implements DatabaseStrategy {
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.ALL, "exception caught", e);
 			em.getTransaction().rollback();
-			AudioDevice.device.openChannel( getClass().getResourceAsStream("/sounds/error.wav"));
+			Configurations.playErrorSound();
 		}
 		return ok;
 	}

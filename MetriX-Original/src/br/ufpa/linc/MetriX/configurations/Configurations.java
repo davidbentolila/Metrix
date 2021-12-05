@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 
-import sun.audio.AudioDevice;
+///////////////////////import sun.audio.AudioDevice;
 import br.ufpa.linc.MetriX.MetriX;
 import br.ufpa.linc.MetriX.analysis.Metric;
 import br.ufpa.linc.MetriX.api.model.API;
@@ -593,7 +593,7 @@ public class Configurations {
  	}
 
 	public static void playErrorSound() {
-		AudioDevice.device.openChannel( Configurations.class.getResourceAsStream("/sounds/error.wav"));
+		//////////////////////////AudioDevice.device.openChannel( Configurations.class.getResourceAsStream("/sounds/error.wav"));
 	}
  	
 // 	 public static void main(String[] args) {

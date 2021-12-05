@@ -224,89 +224,90 @@ public class ClassReader implements Reader {
 //		t.start();
 		Thread t1 = new Thread() {
 			public void run() {
-				System.out.println(Configurations.getString(
-						"analysis.start"));
-				int total = javaClasses.size();
-				int count = 0;
-				for (JavaClass jc : javaClasses) {
-					MetriX.getInstance()
-								.getStatus()
-								.updateProgressBar( Configurations.getString("message.Readclass") + " " + (count++) + "/" + total + " : " + jc.getClassName() );
-					ReadJavaClass(jc);						
-				}
-	
-				
+				try {					
+					System.out.println(Configurations.getString(
+							"analysis.start"));
+					int total = javaClasses.size();
+					int count = 0;
+					for (JavaClass jc : javaClasses) {
+						MetriX.getInstance()
+						.getStatus()
+						.updateProgressBar( Configurations.getString("message.Readclass") + " " + (count++) + "/" + total + " : " + jc.getClassName() );
+						ReadJavaClass(jc);						
+					}
+					
+					
 //
 //				for (JavaClass jc : javaclasses){
 //					MetriX.getInstance().getStatus().updateProgressBar( jc.getClassName() + "("+count+++")");
 //					
 //				}
-
-				// create package tree
-				for (Package p : packages) {
-					Collections.sort(p.getEntities());
-					relatePackage(p);
-				}
-				
-				System.out.println(Configurations.getString(
-						"analysis.stop"));
-
-				MetriX.getInstance()
-						.getStatus()
-						.updateProgressBar(
-								Configurations.getString(
-										"message.calculatingMetrics"));
-				System.out.println(Configurations.getString(
-						"message.calculatingMetrics"));
-
-				/*
-				 * Calculate all metrics
-				 */
-				Entity e;
-				for (MetricModel mm : MetriX.getInstance()
-						.getMetricModelsAvailable()) {
-					for (Metric m_ : mm.getMetrics()) {
-						for (Package p : api.getPackages()) {
-							// main.getStatus().restart(api.getAllEntities().size());
-							for (int i = 0 ; i < p.getEntities().size() ; i++ ) {
-								
-								e = p.getEntities().get(i);
-								
-								MetriX.getInstance()
-										.getStatus()
-										.updateProgressBar(
-												Configurations
-														
-														.getString(
-																"message.calculatingMetric")
-														+ " "
-														+ m_.getLabel()
-														+ ": "
-														+ e.getPackage()
-																.getName()
-														+ "." + e.getName());
-								for (Method m : e.getMethods())
-									m_.setValue(m, m_.getValue(m));
-								m_.setValue(e, m_.getValue(e));
-							}
-							m_.setValue(p, m_.getValue(p));
-						}
-						m_.setValue(api, m_.getValue(api));
+					
+					// create package tree
+					for (Package p : packages) {
+						Collections.sort(p.getEntities());
+						relatePackage(p);
 					}
-				}
-
-				MetriX.getInstance()
-						.getStatus()
-						.updateProgressBar(
-								Configurations.getString(
-										"message.dao.inserting") + " : " +api);
-
-				System.out.println(api);
-
-				System.out.println("total: " + total + " Classes analisadas");
-				
-				Collections.sort(api.getPackages());
-				
+					
+					System.out.println(Configurations.getString(
+							"analysis.stop"));
+					
+					MetriX.getInstance()
+					.getStatus()
+					.updateProgressBar(
+							Configurations.getString(
+									"message.calculatingMetrics"));
+					System.out.println(Configurations.getString(
+							"message.calculatingMetrics"));
+					
+					/*
+					 * Calculate all metrics
+					 */
+					Entity e;
+					for (MetricModel mm : MetriX.getInstance()
+							.getMetricModelsAvailable()) {
+						for (Metric m_ : mm.getMetrics()) {
+							for (Package p : api.getPackages()) {
+								// main.getStatus().restart(api.getAllEntities().size());
+								for (int i = 0 ; i < p.getEntities().size() ; i++ ) {
+									
+									e = p.getEntities().get(i);
+									
+									MetriX.getInstance()
+									.getStatus()
+									.updateProgressBar(
+											Configurations
+											
+											.getString(
+													"message.calculatingMetric")
+											+ " "
+											+ m_.getLabel()
+											+ ": "
+											+ e.getPackage()
+											.getName()
+											+ "." + e.getName());
+									for (Method m : e.getMethods())
+										m_.setValue(m, m_.getValue(m));
+									m_.setValue(e, m_.getValue(e));
+								}
+								m_.setValue(p, m_.getValue(p));
+							}
+							m_.setValue(api, m_.getValue(api));
+						}
+					}
+					
+					MetriX.getInstance()
+					.getStatus()
+					.updateProgressBar(
+							Configurations.getString(
+									"message.dao.inserting") + " : " +api);
+					
+					System.out.println(api);
+					
+					System.out.println("total: " + total + " Classes analisadas");
+					
+					Collections.sort(api.getPackages());
+					
 //				List<Metric> metrics = new ArrayList<Metric>();
 //				metrics.add(new InterfaceSize());
 //				
@@ -340,27 +341,34 @@ public class ClassReader implements Reader {
 //				
 //				System.out.println("acabouuuuuuuuuuuuuuuu");
 //				
-				boolean ok = Database.getInstance().insert(api);
-				
-				MetriX.getInstance().getStatus().dispose();
-				
-				end = System.currentTimeMillis();
-				
-				MetriX.getInstance().setApi(null);
-				
-				if (!folder)
-					if (ok)
-						JOptionPane.showMessageDialog(null, Configurations
-								
-								.getString("message.dao.inserted"));
-					else
-						JOptionPane.showMessageDialog(
-								null,
-								Configurations.getString(
-										"message.dao.errorinsert"));
-				else MetriX.getInstance().nextJar();
-				
-				System.out.println("inserted in " + ((end-start)/1000) + " seconds");
+					boolean ok = Database.getInstance().insert(api);
+					
+					MetriX.getInstance().getStatus().dispose();
+					
+					end = System.currentTimeMillis();
+					
+					MetriX.getInstance().setApi(null);
+					
+					if (!folder)
+						if (ok)
+							JOptionPane.showMessageDialog(null, Configurations
+									
+									.getString("message.dao.inserted"));
+						else
+							JOptionPane.showMessageDialog(
+									null,
+									Configurations.getString(
+											"message.dao.errorinsert"));
+					else MetriX.getInstance().nextJar();
+					
+					System.out.println("inserted in " + ((end-start)/1000) + " seconds");
+				}catch(Exception ex) {
+					MetriX.getInstance().getStatus().dispose();
+					JOptionPane.showMessageDialog(
+							null,
+							"Error on insert API. \n\n" + ex.getMessage());
+					ex.printStackTrace();
+				}
 			}
 		};
 		t1.start();

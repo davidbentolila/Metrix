@@ -91,64 +91,70 @@ public class Analysis {
 				List<Double> metrics = new ArrayList<Double>();
 				 /* 
 				 */
-				
-				for (int i = 0; i < selectedApis.size(); i++) {
-					countClassAPI = 0;
-					API api = selectedApis.get(i);
-					countClass = 0;
+				try {
+					for (int i = 0; i < selectedApis.size(); i++) {
+						countClassAPI = 0;
+						API api = selectedApis.get(i);
+						countClass = 0;
 
-					status.updateProgressBar(api.getNome());
-					
-					StringBuffer APIMetrics = new StringBuffer("Entity;");
-					for (Metric metric : selectedMetrics)
-						APIMetrics.append(metric + ";");
-					APIMetrics.append("\n");
+						status.updateProgressBar(api.getNome());
+						
+						StringBuffer APIMetrics = new StringBuffer("Entity;");
+						for (Metric metric : selectedMetrics)
+							APIMetrics.append(metric + ";");
+						APIMetrics.append("\n");
 
-					for (Package p : api.getPackages()) {
-						if ( p.isShow() )
-						for (Entity e : p.getEntities()) {
-							countClass++;
-							countClassAPI++;
-							status.updateProgressBar(Configurations.getString("message.Readclass") + " " + (count++) + "/" + statusSize + " : " +  e.getFullName());
+						for (Package p : api.getPackages()) {
+							if ( p.isShow() )
+							for (Entity e : p.getEntities()) {
+								countClass++;
+								countClassAPI++;
+								status.updateProgressBar(Configurations.getString("message.Readclass") + " " + (count++) + "/" + statusSize + " : " +  e.getFullName());
 
-							APIMetrics.append(e.getFullName() + ";");
-							for (Metric m : selectedMetrics) {
-								APIMetrics.append(nf.format(m.getValue(e))
-										+ ";");
+								APIMetrics.append(e.getFullName() + ";");
+								for (Metric m : selectedMetrics) {
+									APIMetrics.append(nf.format(m.getValue(e))
+											+ ";");
+								}
+								APIMetrics.append("\n");
+								
+								/*
+								 * Uncomment if want get new decil
+								 * 
+								 */
+//								double metricDecil = e.getMetricsValues().getIS();
+//								if ( !metrics.contains( metricDecil )) metrics.add( metricDecil );
+								/*
+								 */
 							}
-							APIMetrics.append("\n");
-							
-							/*
-							 * Uncomment if want get new decil
-							 * 
-							 */
-//							double metricDecil = e.getMetricsValues().getIS();
-//							if ( !metrics.contains( metricDecil )) metrics.add( metricDecil );
-							/*
-							 */
 						}
+
+						APIMetrics.append("Total :  " + countClassAPI
+								+ " classes\n");
+
+						saveFile = new File(dir + System.getProperty("file.separator") + api.getNome() + "_" + date + ".csv");
+						Files.createFile( saveFile, APIMetrics.toString(), false);
 					}
+					
+					double dec[] = MetriX.getInstance().getDecril(metrics);
+					for (Double d : dec) System.out.println(d);
+					
+//					new BarChart3DDemo3("Teste", dataset);
 
-					APIMetrics.append("Total :  " + countClassAPI
-							+ " classes\n");
+					System.out
+							.println("Total de classes analisadas: " + countClass);
 
-					saveFile = new File(dir + System.getProperty("file.separator") + api.getNome() + "_" + date + ".csv");
-					Files.createFile( saveFile, APIMetrics.toString(), false);
+					System.out
+							.println("Total IS Analysis:  " + TotalMetricAnalysis);
+
+					status.dispose();
+					 JOptionPane.showMessageDialog( MainWindow.getInstance(), "Analysis files generated in: \n" + saveFile );
+				}catch (Exception ex) {
+					status.dispose();
+					JOptionPane.showMessageDialog(MainWindow.getInstance(), "Error to read files.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					ex.printStackTrace();
 				}
-				
-				double dec[] = MetriX.getInstance().getDecril(metrics);
-				for (Double d : dec) System.out.println(d);
-				
-//				new BarChart3DDemo3("Teste", dataset);
-
-				System.out
-						.println("Total de classes analisadas: " + countClass);
-
-				System.out
-						.println("Total IS Analysis:  " + TotalMetricAnalysis);
-
-				status.dispose();
-				 JOptionPane.showMessageDialog( MainWindow.getInstance(), "Analysis files generated in: \n" + saveFile );
 			}
 		};
 		t1.start();

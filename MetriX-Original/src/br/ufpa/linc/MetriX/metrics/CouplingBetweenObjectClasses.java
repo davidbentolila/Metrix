@@ -1,5 +1,7 @@
 package br.ufpa.linc.MetriX.metrics;
 
+import java.io.IOException;
+
 import br.ufpa.linc.MetriX.MetriX;
 import br.ufpa.linc.MetriX.api.model.API;
 import br.ufpa.linc.MetriX.api.model.Entity;
@@ -16,21 +18,21 @@ import br.ufpa.linc.bentolila.metricasprogramasalheios.CKMetrics;
  */
 public class CouplingBetweenObjectClasses extends Metric {
 
-	public Double getValue(API api) {
+	public Double getValue(API api) throws IOException {
 		double cbo = api.getMetricsValues().getCBO();
 		if ( cbo == 0 )
 			for (Package p : api.getPackages()) cbo += getValue(p);
 		return cbo;
 	}
 
-	public Double getValue(Package p) {
+	public Double getValue(Package p) throws IOException {
 		double cbo = p.getMetricsValues().getCBO();
 		if ( cbo == 0 )
 			for ( Entity e : p.getEntities() ) cbo += getValue(e);
 		return cbo;
 	}
 
-	public Double getValue(Entity e) {
+	public Double getValue(Entity e) throws IOException {
 		double cbo = e.getMetricsValues().getCBO();
 		if ( cbo == 0 ){
 			if ( MetriX.tempDir == null ) return 0d;
